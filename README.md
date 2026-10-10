@@ -267,8 +267,8 @@ uangsadar/
 
 ## Kontak & Kontribusi
 
-- **Author:** [Nama Anda]
-- **Email:** [Email Anda]
-- **Repository:** [Link Repository]
+- **Author:** [Muhammad Kevin Efendy]
+- **Email:** [kevefendy@gmail.com]
+- **Repository:** [https://github.com/kevinefendy/Uang-Sadar]
 
 Pull request dan issue sangat diterima!
