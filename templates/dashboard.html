@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — UangSadar{% endblock %}
+
+{% block content %}
+<!-- Kartu Saldo -->
+<div class="card card--primary">
+  <p class="card-label">Saldo Saat Ini</p>
+  <p class="saldo {{ 'saldo--negatif' if saldo < 0 else '' }}">
+    {{ saldo | rupiah }}
+  </p>
+  <div class="saldo-row">
+    <div class="saldo-item saldo-item--masuk">
+      <span class="saldo-icon">↑</span>
+      <div>
+        <p class="saldo-sublabel">Pemasukan</p>
+        <p class="saldo-subval">{{ ringkasan.total_masuk | rupiah }}</p>
+      </div>
+    </div>
+    <div class="saldo-item saldo-item--keluar">
+      <span class="saldo-icon">↓</span>
+      <div>
+        <p class="saldo-sublabel">Pengeluaran</p>
+        <p class="saldo-subval">{{ ringkasan.total_keluar | rupiah }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Target aktif ringkasan -->
+{% set aktif = target_list | selectattr('selesai', 'equalto', 0) | list %}
+{% if aktif %}
+<section class="section">
+  <h2 class="section-title">Target Tabungan Aktif</h2>
+  <div class="target-scroll">
+    {% for t in aktif[:3] %}
+    {% set persen = [(t.jumlah_terkumpul / t.jumlah_target * 100), 100] | min | int %}
+    <div class="target-mini">
+      <div class="target-mini-top">
+        <span class="target-mini-nama">{{ t.nama }}</span>
+        <span class="target-mini-persen">{{ persen }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:{{ persen }}%"></div>
+      </div>
+      <p class="target-mini-info">{{ t.jumlah_terkumpul | rupiah }} / {{ t.jumlah_target | rupiah }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Transaksi terakhir -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Transaksi Terakhir</h2>
+    <a href="{{ url_for('tambah') }}" class="btn-link">+ Tambah</a>
+  </div>
+
+  {% if transaksi %}
+  <ul class="txn-list">
+    {% for t in transaksi %}
+    <li class="txn-item">
+      <div class="txn-left">
+        <span class="txn-dot txn-dot--{{ t.tipe }}"></span>
+        <div>
+          <p class="txn-kategori">{{ t.kategori }}</p>
+          <p class="txn-info">{{ t.catatan or '—' }} &bull; {{ t.tanggal }}</p>
+        </div>
+      </div>
+      <div class="txn-right">
+        <span class="txn-jumlah txn-jumlah--{{ t.tipe }}">
+          {{ '+' if t.tipe == 'pemasukan' else '-' }}{{ t.jumlah | rupiah }}
+        </span>
+        <form method="post" action="{{ url_for('hapus_transaksi', tid=t.id) }}"
+              onsubmit="return confirm('Hapus transaksi ini?')">
+          <button type="submit" class="btn-hapus" title="Hapus">✕</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state">
+    <p>Belum ada transaksi.</p>
+    <a href="{{ url_for('tambah') }}" class="btn btn--primary">Tambah Sekarang</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

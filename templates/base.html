@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a56db" />
+  <title>{% block title %}UangSadar{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <span class="logo">💵 UangSadar</span>
+      {% block header_right %}{% endblock %}
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash flash--{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Bottom navigation -->
+  <nav class="bottom-nav">
+    <a href="{{ url_for('dashboard') }}"
+       class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+    <a href="{{ url_for('tambah') }}"
+       class="nav-item {% if request.endpoint == 'tambah' %}active{% endif %}">
+      <span class="nav-icon">➕</span>
+      <span class="nav-label">Tambah</span>
+    </a>
+    <a href="{{ url_for('target') }}"
+       class="nav-item {% if request.endpoint == 'target' %}active{% endif %}">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Target</span>
+    </a>
+    <a href="{{ url_for('chat') }}"
+       class="nav-item {% if request.endpoint == 'chat' %}active{% endif %}">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Coach</span>
+    </a>
+  </nav>
+</body>
+</html>

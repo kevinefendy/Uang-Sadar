@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Tambah Transaksi — UangSadar{% endblock %}
+
+{% block content %}
+<section class="section">
+  <h2 class="section-title">Tambah Transaksi</h2>
+
+  <form method="post" action="{{ url_for('tambah') }}" id="form-tambah">
+    <!-- Pilih tipe -->
+    <div class="tipe-toggle">
+      <label class="tipe-btn" id="lbl-pengeluaran">
+        <input type="radio" name="tipe" value="pengeluaran" checked />
+        <span>↓ Pengeluaran</span>
+      </label>
+      <label class="tipe-btn" id="lbl-pemasukan">
+        <input type="radio" name="tipe" value="pemasukan" />
+        <span>↑ Pemasukan</span>
+      </label>
+    </div>
+
+    <!-- Jumlah -->
+    <div class="form-group">
+      <label class="form-label" for="jumlah">Jumlah (Rp)</label>
+      <input
+        class="form-input"
+        type="number"
+        id="jumlah"
+        name="jumlah"
+        placeholder="0"
+        min="1"
+        required
+        inputmode="numeric"
+      />
+    </div>
+
+    <!-- Kategori pengeluaran -->
+    <div class="form-group" id="group-pengeluaran">
+      <label class="form-label" for="kat-keluar">Kategori</label>
+      <select class="form-input" id="kat-keluar" name="kategori">
+        {% for k in kategori_pengeluaran %}
+        <option value="{{ k }}">{{ k }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Kategori pemasukan (hidden by default) -->
+    <div class="form-group hidden" id="group-pemasukan">
+      <label class="form-label" for="kat-masuk">Kategori</label>
+      <select class="form-input" id="kat-masuk">
+        {% for k in kategori_pemasukan %}
+        <option value="{{ k }}">{{ k }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Catatan -->
+    <div class="form-group">
+      <label class="form-label" for="catatan">Catatan (opsional)</label>
+      <input
+        class="form-input"
+        type="text"
+        id="catatan"
+        name="catatan"
+        placeholder="Misal: makan siang, gaji Maret..."
+        maxlength="120"
+      />
+    </div>
+
+    <!-- Tanggal -->
+    <div class="form-group">
+      <label class="form-label" for="tanggal">Tanggal</label>
+      <input
+        class="form-input"
+        type="date"
+        id="tanggal"
+        name="tanggal"
+        value="{{ hari_ini }}"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full">Simpan Transaksi</button>
+  </form>
+</section>
+
+<script>
+  // Sinkronisasi radio tipe dengan select kategori
+  const radios = document.querySelectorAll('input[name="tipe"]');
+  const grpKeluar = document.getElementById('group-pengeluaran');
+  const grpMasuk  = document.getElementById('group-pemasukan');
+  const selKeluar = document.getElementById('kat-keluar');
+  const selMasuk  = document.getElementById('kat-masuk');
+  const lblKeluar = document.getElementById('lbl-pengeluaran');
+  const lblMasuk  = document.getElementById('lbl-pemasukan');
+
+  function updateTipe() {
+    const tipe = document.querySelector('input[name="tipe"]:checked').value;
+    if (tipe === 'pengeluaran') {
+      grpKeluar.classList.remove('hidden');
+      grpMasuk.classList.add('hidden');
+      selKeluar.name = 'kategori';
+      selMasuk.name  = '_kategori';
+      lblKeluar.classList.add('tipe-btn--active');
+      lblMasuk.classList.remove('tipe-btn--active');
+    } else {
+      grpMasuk.classList.remove('hidden');
+      grpKeluar.classList.add('hidden');
+      selMasuk.name  = 'kategori';
+      selKeluar.name = '_kategori';
+      lblMasuk.classList.add('tipe-btn--active');
+      lblKeluar.classList.remove('tipe-btn--active');
+    }
+  }
+
+  radios.forEach(r => r.addEventListener('change', updateTipe));
+  updateTipe();
+</script>
+{% endblock %}

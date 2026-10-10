@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Chat Coach — UangSadar{% endblock %}
+
+{% block content %}
+<section class="section chat-section">
+  <h2 class="section-title">💬 Coach Keuangan</h2>
+  <p class="chat-intro">Tanya apa saja soal keuanganmu. Coach siap membantu!</p>
+
+  <!-- Riwayat chat -->
+  <div class="chat-box" id="chatBox">
+    {% if not log %}
+    <div class="chat-empty">
+      <p>Halo! 👋 Saya Coach UangSadar.</p>
+      <p>Coba tanya soal: <em>saldo, hemat, tabungan, tips, investasi</em>…</p>
+    </div>
+    {% endif %}
+
+    {% for entry in log %}
+    <!-- Pesan user -->
+    <div class="bubble bubble--user">
+      <span class="bubble-text">{{ entry.pesan_user }}</span>
+      <span class="bubble-time">{{ entry.waktu[11:16] }}</span>
+    </div>
+    <!-- Balasan bot -->
+    <div class="bubble bubble--bot">
+      <span class="bubble-avatar">🤖</span>
+      <div>
+        <span class="bubble-text">{{ entry.balasan_bot }}</span>
+        <span class="bubble-time">{{ entry.waktu[11:16] }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Form input -->
+  <form method="post" action="{{ url_for('chat') }}" class="chat-form" id="chatForm">
+    <input
+      class="chat-input"
+      type="text"
+      name="pesan"
+      id="pesanInput"
+      placeholder="Ketik pertanyaanmu di sini…"
+      autocomplete="off"
+      required
+      maxlength="200"
+    />
+    <button type="submit" class="btn btn--primary chat-send">Kirim</button>
+  </form>
+
+  <!-- Quick suggestions -->
+  <div class="quick-chips">
+    <button class="chip" onclick="isiPesan('tips hemat')">💡 Tips hemat</button>
+    <button class="chip" onclick="isiPesan('cara menabung')">💰 Cara menabung</button>
+    <button class="chip" onclick="isiPesan('investasi')">📈 Investasi</button>
+    <button class="chip" onclick="isiPesan('dana darurat')">🛡️ Dana darurat</button>
+  </div>
+</section>
+
+<script>
+  // Scroll ke bawah otomatis
+  const box = document.getElementById('chatBox');
+  if (box) box.scrollTop = box.scrollHeight;
+
+  // Isi input dari quick chip
+  function isiPesan(teks) {
+    document.getElementById('pesanInput').value = teks;
+    document.getElementById('pesanInput').focus();
+  }
+</script>
+{% endblock %}
